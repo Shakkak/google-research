@@ -23,7 +23,7 @@ from sklearn import metrics as sk_metrics
 import tensorflow.compat.v1 as tf
 
 # from neural_additive_models import models
-import models
+from models import *
 
 # To suppress warnings in the sigmoid function
 warnings.filterwarnings('ignore')
@@ -271,34 +271,47 @@ def create_iterators(
   x_batch = input_iterator.get_next()
   return x_batch, init_ops
 
+def create_nam_model(x_train: pd.DataFrame,
+                     dropout: float,
+                     feature_dropout: float = 0.0,
+                     num_basis_functions: int = 1000,
+                     units_multiplier: int = 2,
+                     activation: str = 'exu',
+                     name_scope: str = 'model',
+                     shallow: bool = True,
+                     trainable: bool = True):
+    """Create a Neural Additive Model (NAM) with proper handling of pandas DataFrame."""
+    
+    # Ensure x_train is a pandas DataFrame
+    if not isinstance(x_train, pd.DataFrame):
+        raise ValueError("x_train must be a pandas DataFrame")
 
-def create_nam_model(x_train,
-                     dropout,
-                     feature_dropout = 0.0,
-                     num_basis_functions = 1000,
-                     units_multiplier = 2,
-                     activation = 'exu',
-                     name_scope = 'model',
-                     shallow = True,
-                     trainable = True):
-  """Create the NAM model."""
-  num_unique_vals = [
-      len(np.unique(x_train[:, i])) for i in range(x_train.shape[1])
-  ]
-  num_units = [
-      min(num_basis_functions, i * units_multiplier) for i in num_unique_vals
-  ]
-  num_inputs = x_train.shape[-1]
-  nn_model = models.NAM(
-      num_inputs=num_inputs,
-      num_units=num_units,
-      dropout=np.float32(dropout),
-      feature_dropout=np.float32(feature_dropout),
-      activation=activation,
-      shallow=shallow,
-      trainable=trainable,
-      name_scope=name_scope)
-  return nn_model
+    # Compute the number of unique values per feature
+    num_unique_vals = [
+        len(x_train.iloc[:, i].unique()) for i in range(x_train.shape[1])
+    ]
+
+    # Compute the number of units per feature network
+    num_units = [
+        min(num_basis_functions, i * units_multiplier) for i in num_unique_vals
+    ]
+
+    # Get the number of input features (columns in DataFrame)
+    num_inputs = x_train.shape[1]
+
+    # Create NAM model
+    nn_model = models.NAM(
+        num_inputs=num_inputs,
+        num_units=num_units,
+        dropout=np.float32(dropout),
+        feature_dropout=np.float32(feature_dropout),
+        activation=activation,
+        shallow=shallow,
+        trainable=trainable,
+        name_scope=name_scope
+    )
+
+    return nn_model
 
 
 def build_graph(
