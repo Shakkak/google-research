@@ -299,7 +299,7 @@ def create_nam_model(x_train: pd.DataFrame,
 
     # Get the number of input features (columns in DataFrame)
     num_inputs = x_train.shape[1]
-
+    print(num_units,num_unique_vals)
     # Create NAM model
     nn_model = models.NAM(
         num_inputs=num_inputs,
