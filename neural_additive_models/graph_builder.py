@@ -22,6 +22,7 @@ import numpy as np
 from sklearn import metrics as sk_metrics
 import tensorflow.compat.v1 as tf
 
+import pandas as pd
 # from neural_additive_models import models
 import models
 
