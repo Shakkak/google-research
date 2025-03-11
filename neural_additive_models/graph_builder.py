@@ -23,7 +23,7 @@ from sklearn import metrics as sk_metrics
 import tensorflow.compat.v1 as tf
 
 # from neural_additive_models import models
-from models
+import models
 
 # To suppress warnings in the sigmoid function
 warnings.filterwarnings('ignore')
