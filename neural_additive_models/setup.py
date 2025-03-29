@@ -24,7 +24,7 @@ here = pathlib.Path(__file__).parent.resolve()
 long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 install_requires = [
-    'tensorflow==1.15',
+    'tensorflow==1.2.0',
     'numpy>=1.15.2',
     'pandas>=0.24',
     'absl-py',
